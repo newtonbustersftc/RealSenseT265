@@ -59,10 +59,13 @@ android {
 repositories {
     // Needed for FTCLib
     mavenCentral()
-
-    maven {
-        url 'https://maven.0x778.tk'
+    flatDir {
+        dirs '../../resources'
     }
+    mavenLocal()
+//    maven {
+//        url 'https://maven.0x778.tk'
+//    }
 }
 
 configurations {
@@ -86,21 +89,23 @@ dependencies {
     testImplementation 'androidx.test:rules:1.3.0'
 
     def rsVersion = '2.41.1-ftc265' // Change string to bump version
-    downloadSo 'com.intel.realsense:librealsense:' + rsVersion + '@aar'
-    implementation 'com.intel.realsense:librealsense:' + rsVersion + '@aar'
-    downloadHeader 'com.intel.realsense:librealsense:' + rsVersion + '@zip'
+    //downloadSo 'com.intel.realsense:librealsense:' + rsVersion + '@aar'
+    //implementation 'com.intel.realsense:librealsense:' + rsVersion + '@aar'
+    implementation(name:'librealsense-2.41.1-ftc265', ext:'aar')
+    //downloadHeader 'com.intel.realsense:librealsense:' + rsVersion + '@zip'
 }
 
 task extractHeaders(type: Sync) {
-    dependsOn configurations.downloadHeader
-    from { configurations.downloadHeader.collect { zipTree(it) } }
+    //dependsOn configurations.downloadHeader
+    from { zipTree('lib/librealsense-2.41.1-ftc265.zip') }
     into "$projectDir/src/main/cpp/include"
 }
 
 
 task extractSo(type: Sync) {
-    dependsOn configurations.downloadSo
-    from { configurations.downloadSo.collect { zipTree(it) } }
+    //dependsOn configurations.downloadSo
+    //from { configurations.downloadSo.collect { zipTree(it) } }
+    from { zipTree('lib/librealsense-2.41.1-ftc265.aar') }
     include("jni/**")
     into "$buildDir/"
 }
